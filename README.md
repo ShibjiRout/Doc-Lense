@@ -1,2 +1,3 @@
 # Doc-Lense
 ...
+touch main.py rag_pipeline.py config.py requirements.txt Dockerfile .env .gitignore
