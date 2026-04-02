@@ -34,7 +34,6 @@ class QueryRequest(BaseModel):
     question: str
 
 # In-memory dictionary to track file hashes to prevent exact duplicate PDFs
-# In a real app, you would save this to a Postgres database
 file_hash_db = set()
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -59,13 +58,14 @@ async def upload_pdf(
             detail=f"Case ID '{case_id}' already exists. Please try again with a different ID."
         )
 
-    if file.content_type != "application/pdf":
+    # 3. Safer PDF validation checking the file extension
+    if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDFs are accepted.")
     
     try:
         pdf_bytes = await file.read()
         
-        # 3. Duplicate PDF File Check (Digital Fingerprint)
+        # 4. Duplicate PDF File Check (Digital Fingerprint)
         file_hash = hashlib.sha256(pdf_bytes).hexdigest()
         if file_hash in file_hash_db:
             raise HTTPException(
@@ -103,7 +103,6 @@ async def ask_question(
         raise HTTPException(status_code=404, detail=str(ve))
 
 
-# 4. The Delete Endpoint
 @app.delete("/delete/{case_id}", tags=["Data Management"])
 async def delete_case_data(
     case_id: str,
