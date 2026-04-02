@@ -67,7 +67,11 @@ if st.session_state.doc_id:
                         # Expanded for Chain of Thought, collapsed for final output usually looks best
                         is_output = (step.step == "OUTPUT")
                         with st.expander(f"Step: {step.step}", expanded=is_output):
-                            st.write(step.content)
+                            
+                            # --- THE FIX IS HERE ---
+                            # Escape dollar signs to prevent Streamlit from turning them into green math equations
+                            safe_content = step.content.replace("$", r"\$")
+                            st.write(safe_content)
                     
                     if result.pages:
                         st.caption(f"**Sources:** Verified data found on pages {', '.join(map(str, result.pages))}")
