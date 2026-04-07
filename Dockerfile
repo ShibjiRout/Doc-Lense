@@ -1,33 +1,31 @@
+# Use a stable Python base
 FROM python:3.12-slim
 
-# Prevent Python from writing .pyc files and keep logs flushing to the terminal
+# Standard Python environment settings
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Set the working directory
 WORKDIR /app
 
-# Install system dependencies for PyMuPDF and other libraries
+# Install system dependencies (needed for many Python libraries like PyMuPDF)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy and install dependencies first (for faster builds)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN sed -i '/-e ./d' requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your project files
+# Copy the rest of your application code
 COPY . .
 
-# Create the persistent directory for ChromaDB
+# Ensure storage directory exists (Azure containers often need explicit paths)
 RUN mkdir -p /app/chroma_data && chmod 777 /app/chroma_data
 
-# Create a non-root user for security
-RUN useradd -m appuser
-USER appuser
+# Azure defaults to Port 8000 for Python containers
+EXPOSE 8000
 
-# Streamlit uses the port provided by Render ($PORT)
-# Note: We don't hardcode EXPOSE 8000 here because Render handles the mapping
-EXPOSE 8501
-
-# The Start Command: Run Streamlit and bind to $PORT
-CMD ["sh", "-c", "streamlit run frontend.py --server.port $PORT --server.address 0.0.0.0"]
+# Final Command: Run the app and ensure it listens on all interfaces (0.0.0.0)
+CMD ["python", "app.py"]

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doc-Lense | Premium Intelligence</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); 
+            color: #f8fafc; 
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; 
+        }
+        .container { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            padding: 50px; 
+            border-radius: 24px; 
+            width: 420px; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            text-align: center; 
+        }
+        h2 { margin-top: 0; font-weight: 600; letter-spacing: -0.5px; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+        
+        input[type="text"], input[type="file"] { 
+            width: 100%; padding: 14px 16px; margin: 10px 0; 
+            background: rgba(0, 0, 0, 0.2); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 12px; color: white; box-sizing: border-box; 
+            transition: all 0.3s ease; outline: none; font-size: 14px;
+        }
+        input[type="text"]:focus { 
+            border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); 
+        }
+        input[type="file"]::file-selector-button {
+            background: #1e293b; color: #e2e8f0; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-right: 10px; transition: 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover { background: #334155; }
+
+        button { 
+            width: 100%; padding: 14px; margin-top: 15px;
+            background: linear-gradient(to right, #0ea5e9, #3b82f6); 
+            color: white; border: none; border-radius: 12px; cursor: pointer; 
+            font-size: 15px; font-weight: 600; letter-spacing: 0.5px;
+            transition: transform 0.2s, box-shadow 0.2s; 
+        }
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px -10px rgba(56, 189, 248, 0.6); 
+        }
+        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .divider { 
+            margin: 30px 0; height: 1px; 
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); 
+        }
+        .secondary-btn { 
+            background: transparent; border: 1px solid rgba(255,255,255,0.2); 
+        }
+        .secondary-btn:hover { background: rgba(255,255,255,0.05); box-shadow: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Doc-Lense Analyst</h2>
+        <p class="subtitle">Upload a financial document to initiate the AI engine.</p>
+        
+        <input type="text" id="new_case_id" placeholder="Create Case ID (e.g. FIN-001)">
+        <input type="file" id="pdf_file" accept=".pdf">
+        <button onclick="uploadNewDocument()" id="upload-btn">Initialize Analysis</button>
+        <p id="status-msg" style="font-size: 13px; margin-top: 15px; font-weight: 500;"></p>
+
+        <div class="divider"></div>
+
+        <p class="subtitle" style="margin-bottom: 15px;">Or resume an existing analysis:</p>
+        <input type="text" id="existing_case_id" placeholder="Enter Existing Case ID">
+        <button class="secondary-btn" onclick="openExistingCase()">Access Secure Case</button>
+    </div>
+
+    <script>
+        async function uploadNewDocument() {
+            const caseId = document.getElementById('new_case_id').value.trim();
+            const file = document.getElementById('pdf_file').files[0];
+            const statusMsg = document.getElementById('status-msg');
+            const btn = document.getElementById('upload-btn');
+
+            if (!caseId || !file) {
+                statusMsg.innerText = "Error: Case ID and PDF are required.";
+                statusMsg.style.color = "#f87171";
+                return;
+            }
+
+            statusMsg.innerText = "Processing document and extracting intelligence...";
+            statusMsg.style.color = "#38bdf8";
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('case_id', caseId);
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/upload', { method: 'POST', body: formData });
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = result.redirect_url;
+                } else {
+                    statusMsg.innerText = "Error: " + result.error;
+                    statusMsg.style.color = "#f87171";
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                statusMsg.innerText = "Network Error.";
+                statusMsg.style.color = "#f87171";
+                btn.disabled = false;
+            }
+        }
+
+        function openExistingCase() {
+            const caseId = document.getElementById('existing_case_id').value.trim();
+            if (caseId) {
+                window.location.href = "/home?case_id=" + caseId;
+            }
+        }
+    </script>
+</body>
+</html>
