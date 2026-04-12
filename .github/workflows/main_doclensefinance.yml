@@ -1,0 +1,63 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - doclensefinance
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: apliedashib.azurecr.io/
+          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_965E246868784160BF3F339286D0B63B }}
+          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_2F227EAC795B438D9B9B05D424183697 }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: apliedashib.azurecr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_965E246868784160BF3F339286D0B63B }}/doclense:${{ github.sha }}
+          file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    needs: build
+    
+    steps:
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AEC21CE8037640099C5AF5D4A268D5EA }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_16C542AB92AA441ABBEC326C003B8CB2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2D1A684120C841F8A7846EB84CC8FD99 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'doclensefinance'
+          slot-name: 'Production'
+          images: 'apliedashib.azurecr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_965E246868784160BF3F339286D0B63B }}/doclense:${{ github.sha }}'
+          
