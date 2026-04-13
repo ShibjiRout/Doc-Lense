@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Security
-    API_SECRET_KEY: str = "my-super-secret-key-123" # This matches the .env file we made
+    API_SECRET_KEY: str  # This matches the .env file we made
     
     # OpenAI Config
     OPENAI_API_KEY: str

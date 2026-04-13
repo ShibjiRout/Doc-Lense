@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-Lense | Login</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMGYxNzJhIiAvPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWUyOTNiIiAvPgo8L3N2Zz4=');
+        }
+
+        .login-shell {
+            width: 100%;
+            max-width: 460px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.45);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .brand-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 6px 18px rgba(56, 189, 248, 0.25);
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .brand-text p {
+            margin: 4px 0 0 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .intro {
+            margin: 24px 0 18px 0;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .contact-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 22px;
+        }
+
+        .contact-box .label {
+            color: #94a3b8;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .contact-box .name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .contact-box .detail {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .error {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.28);
+            color: #fca5a5;
+            font-size: 14px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        label {
+            color: #cbd5e1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 4px 6px 4px 16px;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .input-box:focus-within {
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.08);
+        }
+
+        input[type="password"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f8fafc;
+            font-size: 15px;
+            padding: 14px 10px 14px 0;
+            font-family: inherit;
+        }
+
+        input[type="password"]::placeholder {
+            color: #64748b;
+        }
+
+        .login-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            box-shadow: 0 10px 24px rgba(56, 189, 248, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 28px rgba(56, 189, 248, 0.28);
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            color: #64748b;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="brand">
+                <div class="brand-badge">✧</div>
+                <div class="brand-text">
+                    <h1>Doc-Lense</h1>
+                    <p>Secure document finance workspace</p>
+                </div>
+            </div>
+
+            <div class="intro">
+                Heyy, if you want to use <strong>Doc Finance</strong>, please contact:
+            </div>
+
+            <div class="contact-box">
+                <div class="label">Contact details</div>
+                <div class="name">Shibji Shekhar Rout</div>
+                <div class="detail">+44 7554829925</div>
+                <div class="detail">mrshibjigmail.com</div>
+            </div>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <label for="api_secret_key">Enter Secret Key</label>
+                <div class="input-box">
+                    <input
+                        type="password"
+                        id="api_secret_key"
+                        name="api_secret_key"
+                        placeholder="Enter secret key"
+                        required
+                    >
+                </div>
+                <button type="submit" class="login-btn">Access Workspace</button>
+            </form>
+
+            <div class="footer-note">
+                Authorized access only
+            </div>
+        </div>
+    </div>
+</body>
+</html>
